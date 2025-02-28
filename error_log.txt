@@ -1,0 +1,33 @@
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+C:\Users\jonat\ai_dividend_finder\app.py:47: UserWarning: Starting a Matplotlib GUI outside of the main thread will likely fail.
+  plt.figure(figsize=(6, 4))
+127.0.0.1 - - [27/Feb/2025 20:47:23] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Feb/2025 20:47:23] "GET /static/KO_dividends.png HTTP/1.1" 200 -
+Exception ignored in: <function Image.__del__ at 0x00000222710F3F40>
+Traceback (most recent call last):
+  File "C:\Users\jonat\AppData\Local\Programs\Python\Python310\lib\tkinter\__init__.py", line 4046, in __del__
+    self.tk.call('image', 'delete', self.name)
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x000002227116C8B0>
+Traceback (most recent call last):
+  File "C:\Users\jonat\AppData\Local\Programs\Python\Python310\lib\tkinter\__init__.py", line 388, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x000002227116C8B0>
+Traceback (most recent call last):
+  File "C:\Users\jonat\AppData\Local\Programs\Python\Python310\lib\tkinter\__init__.py", line 388, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x000002227116C8B0>
+Traceback (most recent call last):
+  File "C:\Users\jonat\AppData\Local\Programs\Python\Python310\lib\tkinter\__init__.py", line 388, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x000002227116C8B0>
+Traceback (most recent call last):
+  File "C:\Users\jonat\AppData\Local\Programs\Python\Python310\lib\tkinter\__init__.py", line 388, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+RuntimeError: main thread is not in main loop
+Tcl_AsyncDelete: async handler deleted by the wrong thread
