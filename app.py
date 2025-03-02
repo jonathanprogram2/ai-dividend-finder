@@ -25,23 +25,18 @@ sector_stocks = {
 def get_dividend_data(stock_symbol):
     """Fetch dividend yield and history for a given stock."""
     stock = yf.Ticker(stock_symbol)
-    hist_dividends = stock.dividends  
+    hist_dividends = stock.dividends
 
-    if hist_dividends.empty:
-        print(f"Error: No valid dividend data for {stock_symbol}")
-        return None  # Avoid returning an invalid object
-
-    # Debugging: Print stock.info
-    stock_info = stock.info
-    print(f"{stock_symbol} Stock Info: {stock_info}")
-
-    # Ensure dividendYield exists
-    dividend_yield = stock_info.get("dividendYield", None)
-    if dividend_yield is None:
-        print(f"Warning: No dividend yield found for {stock_symbol}")
-        return None  # Avoid breaking DataFrame operations
+    if not isinstance(hist_dividends, pd.Series) or hist_dividends.empty:
+        print(f"Error: No valid dividend data for {stock_symbol}, received: {hist_dividends}")
+        return None
 
     latest_dividend = hist_dividends.iloc[-1] if not hist_dividends.empty else 0
+    dividend_yield = stock.info.get("dividendYield", None)
+
+    if dividend_yield is None:
+        print(f"Warning: No dividend yield found for {stock_symbol}")
+        return None
 
     return {
         "Stock": stock_symbol,
