@@ -25,22 +25,28 @@ sector_stocks = {
 def get_dividend_data(stock_symbol):
     """Fetch dividend yield and history for a given stock."""
     stock = yf.Ticker(stock_symbol)
-    hist_dividends = stock.dividends  # Get historical dividends
+    hist_dividends = stock.dividends  
 
-    if not isinstance(hist_dividends, pd.Series):  # Check if it's a pandas Series
-        print(f"Error: No valid dividend data for {stock_symbol}")
-        return None  # Prevents crashes
-        
     if hist_dividends.empty:
-        return None
+        print(f"Error: No valid dividend data for {stock_symbol}")
+        return None  # Avoid returning an invalid object
+
+    # Debugging: Print stock.info
+    stock_info = stock.info
+    print(f"{stock_symbol} Stock Info: {stock_info}")
+
+    # Ensure dividendYield exists
+    dividend_yield = stock_info.get("dividendYield", None)
+    if dividend_yield is None:
+        print(f"Warning: No dividend yield found for {stock_symbol}")
+        return None  # Avoid breaking DataFrame operations
 
     latest_dividend = hist_dividends.iloc[-1] if not hist_dividends.empty else 0
-    dividend_yield = stock.info.get("dividendYield", 0)  # Get current dividend yield
 
     return {
         "Stock": stock_symbol,
         "Latest Dividend": latest_dividend,
-        "Dividend Yield (%)": round(dividend_yield * 100, 2) if dividend_yield else "N/A"
+        "Dividend Yield (%)": round(dividend_yield * 100, 2)
     }
 
 def plot_dividend_trend(stock_symbol):
@@ -110,7 +116,23 @@ def rank_sector_dividends():
 
     for sector, stocks in sector_stocks.items():
         dividend_data = [get_dividend_data(stock) for stock in stocks]
-        df = pd.DataFrame(dividend_data).dropna().sort_values(by="Dividend Yield (%)", ascending=False)
+        
+        # Filter out None values
+        dividend_data = [data for data in dividend_data if data is not None]
+
+        if not dividend_data:  # If no valid data, skip this sector
+            print(f"Warning: No valid dividend data for sector {sector}")
+            sector_ranking[sector] = []
+            continue
+
+        df = pd.DataFrame(dividend_data)
+
+        if "Dividend Yield (%)" not in df.columns:  # Avoid KeyError
+            print(f"Error: 'Dividend Yield (%)' column missing in sector {sector}")
+            sector_ranking[sector] = []
+            continue
+
+        df = df.sort_values(by="Dividend Yield (%)", ascending=False)
         sector_ranking[sector] = df.to_dict(orient="records")
 
     return sector_ranking
