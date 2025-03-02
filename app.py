@@ -7,6 +7,20 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
+def test_yfinance():
+    try:
+        stock = yf.Ticker("AAPL")
+        stock_info = stock.info  # Fetch stock details
+
+        with open("yfinance_test.log", "w") as f:
+            f.write(str(stock_info))  # Save output to a log file
+
+        print("yfinance test successful. Check logs.")
+    except Exception as e:
+        print(f"yfinance test failed: {e}")
+
+# Run this when the app starts
+test_yfinance()
 
 app = Flask(__name__)
 
@@ -25,23 +39,21 @@ sector_stocks = {
 def get_dividend_data(stock_symbol):
     """Fetch dividend yield and history for a given stock."""
     stock = yf.Ticker(stock_symbol)
-    hist_dividends = stock.dividends
+    hist_dividends = stock.dividends  # Get historical dividends
+
+    print(f"DEBUG: {stock_symbol} raw dividend data:", hist_dividends)  # ADD THIS LINE
 
     if not isinstance(hist_dividends, pd.Series) or hist_dividends.empty:
-        print(f"Error: No valid dividend data for {stock_symbol}, received: {hist_dividends}")
+        print(f"Error: No valid dividend data for {stock_symbol}, received:", hist_dividends)  # ADD THIS
         return None
 
-    latest_dividend = hist_dividends.iloc[-1] if not hist_dividends.empty else 0
-    dividend_yield = stock.info.get("dividendYield", None)
-
-    if dividend_yield is None:
-        print(f"Warning: No dividend yield found for {stock_symbol}")
-        return None
+    latest_dividend = hist_dividends.iloc[-1]
+    dividend_yield = stock.info.get("dividendYield", 0)  # Get current dividend yield
 
     return {
         "Stock": stock_symbol,
         "Latest Dividend": latest_dividend,
-        "Dividend Yield (%)": round(dividend_yield * 100, 2)
+        "Dividend Yield (%)": round(dividend_yield * 100, 2) if dividend_yield else "N/A"
     }
 
 def plot_dividend_trend(stock_symbol):
