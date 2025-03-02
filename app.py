@@ -27,6 +27,10 @@ def get_dividend_data(stock_symbol):
     stock = yf.Ticker(stock_symbol)
     hist_dividends = stock.dividends  # Get historical dividends
 
+    if not isinstance(hist_dividends, pd.Series):  # Check if it's a pandas Series
+        print(f"Error: No valid dividend data for {stock_symbol}")
+        return None  # Prevents crashes
+        
     if hist_dividends.empty:
         return None
 
