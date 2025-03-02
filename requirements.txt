@@ -1,5 +1,6 @@
 setuptools>=65.5.0
 wheel
+pip
 Flask==2.2.5
 Flask-Bootstrap==3.3.7.1
 gunicorn
