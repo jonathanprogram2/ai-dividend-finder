@@ -4,6 +4,7 @@ matplotlib.use("Agg", force=True)
 from flask import Flask, render_template, request
 import yfinance as yf
 import pandas as pd
+import requests
 import matplotlib.pyplot as plt
 import os
 
@@ -38,17 +39,16 @@ sector_stocks = {
 
 def get_dividend_data(stock_symbol):
     """Fetch dividend yield and history for a given stock."""
-    stock = yf.Ticker(stock_symbol)
-    hist_dividends = stock.dividends  # Get historical dividends
+    session = requests.Session()
+    session.headers.update({'User-Agent': 'Mozilla/5.0'})  # Mimic a real browser
+    stock = yf.Ticker(stock_symbol, session=session)  # Attach session
 
-    print(f"DEBUG: {stock_symbol} raw dividend data:", hist_dividends)  # ADD THIS LINE
-
-    if not isinstance(hist_dividends, pd.Series) or hist_dividends.empty:
-        print(f"Error: No valid dividend data for {stock_symbol}, received:", hist_dividends)  # ADD THIS
+    hist_dividends = stock.dividends
+    if hist_dividends.empty:
         return None
 
-    latest_dividend = hist_dividends.iloc[-1]
-    dividend_yield = stock.info.get("dividendYield", 0)  # Get current dividend yield
+    latest_dividend = hist_dividends.iloc[-1] if not hist_dividends.empty else 0
+    dividend_yield = stock.info.get("dividendYield", 0)
 
     return {
         "Stock": stock_symbol,
